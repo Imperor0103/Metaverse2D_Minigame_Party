@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: y axis
+    uniqueID: 988915763
+    locked: 0

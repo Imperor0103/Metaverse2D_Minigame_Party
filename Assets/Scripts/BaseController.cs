@@ -10,6 +10,10 @@ public class BaseController : MonoBehaviour
     [SerializeField] private SpriteRenderer characterRenderer;
     [SerializeField] private Transform weaponPivot;
 
+    /// 좌상, 좌하 방향을 보는 스프라이트는 따로 저장해두어야한다
+    [SerializeField] private Sprite defaultSprite; // 기본 스프라이트 (좌하)
+    [SerializeField] private Sprite upSprite;      // 위쪽을 볼 때 사용할 스프라이트 (좌상)
+
     protected Vector2 movementDirection = Vector2.zero; // 이동방향
     public Vector2 MovementDirection { get { return movementDirection; } }
 
@@ -32,7 +36,7 @@ public class BaseController : MonoBehaviour
     protected virtual void Update()
     {
         HandleAction(); // 입력처리, 이동에 필요한 데이터 처리
-        Rotate(lookDirection);  // 회전
+        //Rotate(lookDirection);  // 회전은 오직 "Bow" 공격할때만
     }
 
     protected virtual void FixedUpdate()
@@ -49,7 +53,7 @@ public class BaseController : MonoBehaviour
 
     }
 
-    private void Movment(Vector2 direction)
+    protected virtual void Movment(Vector2 direction)
     {
         direction = direction * 5;
         if (knockbackDuration > 0.0f)
@@ -63,19 +67,23 @@ public class BaseController : MonoBehaviour
 
     private void Rotate(Vector2 direction)
     {
-        // Atan2는 y와 x를 받아서 그 사이에 각(rad)을 구한다(arctan 개념이다), 이걸 deg로 바꾼다
-        float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        bool isLeft = Mathf.Abs(rotZ) > 90f;    // 절대값이 90도 넘어가면 2,4사분면
+        /// 공격상황에서만 마우스가 회전할 수 있게 해야한다
 
-        characterRenderer.flipX = isLeft;   // 2,4사분면에 있으면 좌우로 뒤집는다
+        float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        bool isLookingUp = (rotZ > 0) && (rotZ < 180);  // 위쪽(1,2사분면)이면 true
+        //Debug.Log($"rotZ: {rotZ}, isUp: {isLookingUp}");
+
+        bool isLookingRight = Mathf.Abs(rotZ) < 90f;  // 1,3사분면이면 true (오른쪽)
+
+        // 위쪽을 바라보면 upSprite 사용, 아래쪽이면 기본 스프라이트 사용
+        characterRenderer.sprite = isLookingUp ? upSprite : defaultSprite;
+        characterRenderer.flipX = isLookingRight;   // 좌우 반전
 
         if (weaponPivot != null)
         {
-            // Quaternion.Euler의 매개변수로 deg값 사용
             weaponPivot.rotation = Quaternion.Euler(0, 0, rotZ);
         }
     }
-
     public void ApplyKnockback(Transform other, float power, float duration)
     {
         knockbackDuration = duration;

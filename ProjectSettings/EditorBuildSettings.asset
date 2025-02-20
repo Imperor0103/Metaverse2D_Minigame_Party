@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Lobby.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/FlappyPlane.unity
+    guid: 2f76055348eb46248ac8fce38444cdb3
+  - enabled: 1
+    path: Assets/Scenes/TheStack.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

@@ -24,11 +24,9 @@ public class PlayerController : BaseController
     protected override void HandleAction()
     {
         // npc와 상호작용 중에는 움직일 수 없다
-
-
-
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        // float로 선언했으니... false 대신 0f를 대입해서 못움직이게하자
+        float horizontal = MainGameManager.Instance.isAction ? 0f : Input.GetAxisRaw("Horizontal");
+        float vertical = MainGameManager.Instance.isAction ? 0f : Input.GetAxisRaw("Vertical");
 
         // isometric 처리
         Vector2 isometricMovementDirection = new Vector2(
@@ -72,7 +70,7 @@ public class PlayerController : BaseController
             //// 움직임이 있을 때 Move 방향 설정
             //animator.SetBool("IsMove", true);  /// 움직일 때는 Move 상태 사용
             //Debug.Log($"movement.x: {movement.x}, movement.y: {movement.y} ");
-                        // 현재 이동 방향 저장
+            // 현재 이동 방향 저장
             //lastMovementDirection = movement;
         }
         else

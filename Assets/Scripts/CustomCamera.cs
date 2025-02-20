@@ -1,58 +1,78 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-// ÇÃ·¹ÀÌ¾î¸¦ µû¶ó°¡¸ç, º®À» ³Ñ¾î°¥ ¼ö ¾ø´Ù
+// í”Œë ˆì´ì–´ë¥¼ ë”°ë¼ê°€ë©°, (-20,0), (0,-10), (20,0), (0,10)ì„ ì •ì ìœ¼ë¡œ í•˜ëŠ” ë§ˆë¦„ëª¨ ë‚´ë¶€ì—ì„œë§Œ í”Œë ˆì´ì–´ ë”°ë¼ê°„ë‹¤
 public class CustomCamera : MonoBehaviour
 {
-    public Transform target;    // Ä«¸Ş¶ó°¡ ÃßÀûÇÒ ´ë»ó(player)
+    public Transform target;    // ì¹´ë©”ë¼ê°€ ì¶”ì í•  ëŒ€ìƒ(player)
+    public float followDistance = 2.0f;  //ì˜¤ì°¨ ë²”ìœ„
+    public float followSpeed = 5.0f;
 
-    public float threshold = 10.0f;  //¿ÀÂ÷ ¹üÀ§
-
-    private Vector2 offset; // isometric ±âÁØ ¿ÀÇÁ¼Â ÀúÀå
-
-    public Tilemap tilemap;     // Ä«¸Ş¶óÀÇ Bounds¸¦ ¼³Á¤ÇÏ±â À§ÇØ Å¸ÀÏ¸ÊÀÇ Å©±â°¡ ÇÊ¿äÇÏ´Ù
-
+    public Vector2 center = Vector2.zero; // ë§ˆë¦„ëª¨ ì¤‘ì‹¬
+    public float width = 20f; // ê°€ë¡œ ê±°ë¦¬ (ì¢Œìš° ë²”ìœ„)
+    public float height = 10f; // ì„¸ë¡œ ê±°ë¦¬ (ìƒí•˜ ë²”ìœ„)
 
     // Start is called before the first frame update
     void Start()
     {
-        //tilemap = GameObject.Find("Plain").GetComponentIn;
-
-        // ÂüÁ¶°¡ ²÷¾îÁú °ÍÀÌ¹Ç·Î, Á÷Á¢ ¿¬°áÇÑ´Ù
+        // ì°¸ì¡°ê°€ ëŠì–´ì§ˆ ê²ƒì´ë¯€ë¡œ, ì§ì ‘ ì—°ê²°í•œë‹¤
         target = GameObject.Find("MainPlayer")?.transform;
 
         if (target == null) return;
-
-        // ÃÊ±â ¿ÀÇÁ¼ÂÀ» ÀÌ¼Ò¸ŞÆ®¸¯ ÁÂÇ¥ ±âÁØÀ¸·Î ÀúÀå
-        offset.x = threshold;
-        offset.y = threshold / 2;
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (target == null) return;
 
-        // ÀÌ¼Ò¸ŞÆ®¸¯ ÁÂÇ¥ º¯È¯
-        // ±»ÀÌ ±×·²ÇÊ¿äÀÖ³ª? ÇÃ·¹ÀÌ¾îÀÇ ÁÂÇ¥¿¡¼­ °è»êµÇ¾î ³ª¿À´Âµ¥
-        // ÇÃ·¹ÀÌ¾î·ÎºÎÅÍ ¶³¾îÁø °Å¸®°¡ x´Â offset.xº¸´Ù ÀÛ°Å³ª °°¾Æ¾ßÇÏ°í
-        // 
-        float isometricX = target.position.x - target.position.y;
-        float isometricY = (target.position.x + target.position.y) * 0.5f;
+        Vector3 targetPos = target.position; // í”Œë ˆì´ì–´ ìœ„ì¹˜
 
+        Vector3 cameraPos = transform.position; // í˜„ì¬ ì¹´ë©”ë¼ ìœ„ì¹˜ 
 
-        Vector2 currentPos = transform.position;
+        // ì¹´ë©”ë¼ê°€ í”Œë ˆì´ì–´ë¥¼ ë”°ë¼ê°€ë˜, ìµœëŒ€ followDistanceì´ë‚´ì—ì„œë§Œ ì´ë™
 
+        float distance = Vector3.Distance(cameraPos, targetPos);
+        if (distance > followDistance)
+        {
+            // ê±°ë¦¬ê°€ followDistanceë¥¼ ì´ˆê³¼í•˜ë©´ ì²œì²œíˆ ë”°ë¼ê°
+            cameraPos = Vector2.Lerp(cameraPos, targetPos, followSpeed * Time.deltaTime);
+        }
+        // ë§ˆë¦„ëª¨ ë‚´ë¶€ì¸ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜ í˜¸ì¶œ(clamp: ìµœì†Œ, ìµœëŒ€ ì‚¬ì´ë¡œ ê°’ì„ ì œí•œí•œë‹¤)
+        Vector3 clampedPos = ClampToDiamond(cameraPos, center, width, height);
+        // Z ì¢Œí‘œë¥¼ -10ìœ¼ë¡œ ìœ ì§€
+        clampedPos.z = -10f;
 
-        // ÀÌµ¿ Á¦ÇÑ
+        transform.position = clampedPos;
+    }
 
+    Vector2 ClampToDiamond(Vector2 position, Vector2 center, float width, float height)
+    {
+        float dx = Mathf.Abs(position.x - center.x); // X ê±°ë¦¬ ë³€í™”ëŸ‰
+        float dy = Mathf.Abs(position.y - center.y); // Y ê±°ë¦¬
 
+        // ë§ˆë¦„ëª¨ ë‚´ë¶€ë¼ë©´ ê·¸ëŒ€ë¡œ ë°˜í™˜
+        if (dx / width + dy / height <= 1)  /// xì ˆí¸, yì ˆí¸ ì§€ë‚˜ëŠ” ì§ì„ ì˜ ë°©ì •ì‹ìœ¼ë¡œ ë‘˜ëŸ¬ì‹¸ì¸ ë‚´ë¶€
+            return new Vector3(position.x, position.y, -10f); // Zê°’ì€ -10fë¡œ ê³ ì •
 
-        Vector3 pos = transform.position;
-        // ¸ñÇ¥ À§Ä¡ °è»ê
-        //pos.x = target.position.x + offsetX;
-        transform.position = pos;
+        // ë§Œì•½ ë§ˆë¦„ëª¨ ì™¸ë¶€ë¼ë©´
+        // ë§ˆë¦„ëª¨ ê²½ê³„ì— ìœ„ì¹˜ë¥¼ ë§ì¶¤
+        float clampedX = Mathf.Clamp(position.x, center.x - width, center.x + width);
+        float clampedY = Mathf.Clamp(position.y, center.y - height, center.y + height);
+
+        // í´ë¨í”„í•œ ìœ„ì¹˜ê°€ ë§ˆë¦„ëª¨ ë‚´ë¶€ì— ìˆëŠ”ì§€ ë‹¤ì‹œ í™•ì¸
+        float newDx = Mathf.Abs(clampedX - center.x);
+        float newDy = Mathf.Abs(clampedY - center.y);
+        if (newDx / width + newDy / height > 1)
+        {
+            // ê²½ê³„ë¥¼ ë²—ì–´ë‚œë‹¤ë©´ ê°€ì¥ ê°€ê¹Œìš´ ë§ˆë¦„ëª¨ ê²½ê³„ë¡œ ì´ë™
+            float scaleFactor = 1f / (newDx / width + newDy / height);
+            clampedX = center.x + (clampedX - center.x) * scaleFactor;
+            clampedY = center.y + (clampedY - center.y) * scaleFactor;
+        }
+
+        // Zê°’ì€ -10fë¡œ ê³ ì •
+        return new Vector3(clampedX, clampedY, -10f);
     }
 }

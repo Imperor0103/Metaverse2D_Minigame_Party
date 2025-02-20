@@ -20668,8 +20668,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  threshold: 10
-  tilemap: {fileID: 0}
+  followDistance: 2
+  followSpeed: 5
+  center: {x: 0, y: 0}
+  width: 20
+  height: 10
 --- !u!1 &527445717
 GameObject:
   m_ObjectHideFlags: 0
@@ -24742,6 +24745,7 @@ MonoBehaviour:
   weaponPivot: {fileID: 929105720}
   defaultSprite: {fileID: 1959512401, guid: 7465ef4f8274330419bdc1abe808b291, type: 3}
   upSprite: {fileID: -1383260436, guid: 7465ef4f8274330419bdc1abe808b291, type: 3}
+  mainGameManager: {fileID: 0}
 --- !u!114 &687913799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27324,6 +27328,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922c906d336e9fa47a264bc623601c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  talkPanel: {fileID: 0}
+  talkText: {fileID: 0}
+  scanObject: {fileID: 0}
+  isAction: 0
 --- !u!4 &1926858466
 Transform:
   m_ObjectHideFlags: 0

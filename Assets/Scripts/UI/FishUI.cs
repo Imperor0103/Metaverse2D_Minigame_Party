@@ -25,6 +25,7 @@ public class FishUI : BaseUI
         bestFlappyScoreText = transform.Find("EnterMini_1/BFScoreText").GetComponent<TextMeshProUGUI>();
         thisFlappyScoreText = transform.Find("ExitMini_1/TFScoreText").GetComponent<TextMeshProUGUI>();
     }
+    // Lobby 씬에 올때 호출해야한다
     public void UpdateHighScore()
     {
         // data매니저에 있는걸 가져와서 그냥 갱신한다

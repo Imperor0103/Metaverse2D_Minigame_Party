@@ -33,6 +33,7 @@ public class HamburgerUI : BaseUI
         thisStackComboText = transform.Find("ExitMini_2/TSComboText").GetComponent<TextMeshProUGUI>();
 
     }
+    // Lobby씬에 올때 무조건 해야한다
     public void UpdateHighScore()
     {
         // data매니저에 있는걸 가져와서 그냥 갱신한다
@@ -41,8 +42,6 @@ public class HamburgerUI : BaseUI
         bestStackScoreText.text = DataManager.Instance.bestStackScore.ToString();
         bestStackComboText.text = DataManager.Instance.bestStackCombo.ToString();
     }
-
-
 
     protected override eUIState GetUIState()
     {

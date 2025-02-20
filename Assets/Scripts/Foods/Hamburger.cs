@@ -15,6 +15,9 @@ public class Hamburger : MonoBehaviour, ITrigger
         // 충돌체가 메인플레이어(Player)인지 확인
         if (collision.CompareTag("Player"))
         {
+            // 햄버거 UI의 최고점수 경신
+            UIManager.Instance.hamburgerUI.UpdateHighScore();
+
             // 햄버거 UI창 보여준다
             UIManager.Instance.hamburgerUI.gameObject.SetActive(true);
             UIManager.Instance.isHamburgerTriggered = true;  // update에서 확인 후 씬을 바꾼다

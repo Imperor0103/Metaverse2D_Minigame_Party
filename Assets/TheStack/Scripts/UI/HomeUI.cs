@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HomeUI : BaseUI
@@ -33,7 +34,8 @@ public class HomeUI : BaseUI
 
     void OnClickExitButton()
     {
-        uiManager.OnClickExit();
+        SceneManager.LoadScene("Lobby");
+        //uiManager.OnClickExit();
     }
 
 }

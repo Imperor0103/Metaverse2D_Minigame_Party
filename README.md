@@ -5,7 +5,7 @@
 - 개발기간 : 2025.02.17 ~ 진행중
 - 사용기술
 - 언어 : C#
-- 개발환경 : Windows 11, Github, C# 콘솔앱
+- 개발환경 : Windows 11, Github, Unity 2D
 
 ## 내용
 - 2D Isometric 시점의 쿼터뷰로 이동합니다(이동: WASD, 방향키)
